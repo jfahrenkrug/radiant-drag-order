@@ -73,6 +73,14 @@ var DragOrder = Class.create({
     // Loop through all rows
     var _this = document.dragOrderObj;
     var top;
+
+	// scroll through all trs and set bgcolor to white to reset hover
+	 var myTrArray = this.origRow.parentNode.getElementsBySelector('tr');
+	 myTrArray.each(function(i) {
+		    if(i.id != ''){ $(i.id).setStyle({ backgroundColor: '#ffffff'});}
+	 });
+
+
     this.origRow.parentNode.getElementsBySelector('tr').find(function(obj){
       top = obj.cumulativeOffset().top;
       
