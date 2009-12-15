@@ -6,13 +6,22 @@ module DragOrder::PageControllerExtensions
     @loc = params[:pos].to_i
     @copy = params[:copy].to_i > 0
     
-    # Set initial position if the page has none yet
-    if @page.position == nil
-      @last_page = Page.find_all_by_parent_id( @page.parent.id, :order => [ "position DESC" ], :limit => 1, :conditions => " position is not null " )
-      @last_page.each do |p|
-        @page.position = p.position.to_i + 1
+    # check first to see if there are any new, incoming pages with nil position values.
+    # mimic the way Radiant orders the objects on index page with new positions
+    all_new_pages = Page.find_all_by_parent_id( @page.parent.id, :conditions => ["position is null"] )
+    if(all_new_pages.size > 0)
+      all_pages = Page. find_all_by_parent_id( @page.parent.id, :order => ["position ASC"] )
+      i = 1
+      all_pages.each do |p|
+        p.position = i
+        p.save
+        i += 1
       end
     end
+    
+    # re-establish the incoming page object with its new position (otherwise is still nil)
+    @page = Page.find(params[:id])
+    @loc= @page.position
     
      if !@copy
         # Remove the page from its old position
