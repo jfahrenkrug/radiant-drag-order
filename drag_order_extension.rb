@@ -23,8 +23,8 @@ class DragOrderExtension < Radiant::Extension
   
   def activate
     index = (admin.page || admin.pages).index
-    index.add :sitemap_head, "admin/pages/drag_order_header"
-    index.add :node, "admin/pages/drag_order"
+    index.add :sitemap_head, "admin/pages/drag_order_header", :before=>"title_column_header"
+    index.add :node, "admin/pages/drag_order", :before=>"title_column"
     index.add :top, "admin/pages/header"
     Page.send :include, DragOrder::PageExtensions
     (Admin::PageController rescue Admin::PagesController).send :helper, DragOrder::PageHelper
