@@ -3,5 +3,5 @@ module DragOrder::PageHelper
     image("drag_order.png",
           :alt => "Drag this icon to move the page"
           )
-  end
+  end    
 end
