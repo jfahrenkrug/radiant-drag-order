@@ -1,13 +1,15 @@
 class AddPositionToPages < ActiveRecord::Migration
   def self.up
-    add_column :pages, :position, :integer
-    Page.reset_column_information
-    say_with_time("Putting all pages in a default order...") do
-      ActiveRecord::Base.record_timestamps = false
-      Page.find_all_by_parent_id(nil).each do |p|
-        put_children_into_list(p)
+    unless Page.column_names.include?('position')   # ie. unless the reorder extension has been installed
+      add_column :pages, :position, :integer
+      Page.reset_column_information
+      say_with_time("Putting all pages in a default order...") do
+        ActiveRecord::Base.record_timestamps = false
+        Page.find_all_by_parent_id(nil).each do |p|
+          put_children_into_list(p)
+        end
+        ActiveRecord::Base.record_timestamps = true
       end
-      ActiveRecord::Base.record_timestamps = true
     end
   end
   
@@ -21,4 +23,5 @@ class AddPositionToPages < ActiveRecord::Migration
       put_children_into_list(pg)
     end
   end
+  
 end
